@@ -8,5 +8,5 @@ import { ScatterComponent } from './scatter/scatter.component';
   directives: [ ScatterComponent ]
 })
 export class AppComponent {
-  title = 'app works!';
+  title = 'Angular2 D3 Component Example';
 }
