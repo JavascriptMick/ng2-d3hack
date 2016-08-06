@@ -9,6 +9,6 @@ import * as d3 from 'd3';
 export class ScatterComponent implements OnInit {
   constructor() { }
 
-  ngOnInit() { }
+  ngOnInit() { console.log(d3);}
 
 }
