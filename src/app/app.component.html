@@ -1,4 +1,17 @@
 <h1>
   {{title}}
 </h1>
-<my-scatter></my-scatter>
+<my-scatter
+  [outerWidth] = "300"
+  [outerHeight] = "250"
+  [margin] = "{left: 45, top: 10, right: 15, bottom: 40 }"
+  [xAxisLabelOffset] = "35"
+  [yAxisLabelOffset] = "30"
+  [styleAttrs] = "{'stroke-width': '2px','fill': 'none'}"
+  rColumn = "sepal_width"
+  cColumn = "species"
+  xColumn = "sepal_length"
+  yColumn = "petal_length"
+  xAxisLabelText = "Sepal Length"
+  yAxisLabelText = "Petal Length">
+</my-scatter>

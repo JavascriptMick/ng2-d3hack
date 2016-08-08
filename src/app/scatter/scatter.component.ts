@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, ElementRef, OnChanges, SimpleChanges,  } from '@angular/core';
 import * as d3 from 'd3';
 
 @Component({
@@ -7,22 +7,21 @@ import * as d3 from 'd3';
   template: `<ng-content></ng-content>`
 })
 export class ScatterComponent implements OnInit, OnChanges {
-  private outerWidth: number = 300;
-  private outerHeight: number = 250;
-  private margin = { left: 45, top: 10, right: 15, bottom: 40 };
-  private circleRadius: number = 5;
-  private rMin: number = 1;
-  private rMax: number = 15;
-  private xColumn: string = "sepal_length";
-  private yColumn: string = "petal_length";
-  private rColumn: string = "sepal_width";
-  private cColumn: string = "species";
-  private cScheme: string[] = d3.schemeCategory10;
-  private styleAttrs = {"stroke-width": "2px","fill": "none"};
-  private xAxisLabelText: string = "Sepal Length";
-  private xAxisLabelOffset: number = 35;
-  private yAxisLabelText: string = "Petal Length";
-  private yAxisLabelOffset: number = 30;
+  @Input() outerWidth: number = 300;
+  @Input() outerHeight: number = 250;
+  @Input() margin = { left: 45, top: 10, right: 15, bottom: 40 };
+  @Input() xAxisLabelOffset: number = 35;
+  @Input() yAxisLabelOffset: number = 30;
+  @Input() rMin: number = 1;
+  @Input() rMax: number = 15;
+  @Input() styleAttrs = {"stroke-width": "2px","fill": "none"};
+  @Input() cScheme: string[] = d3.schemeCategory10;
+  @Input() rColumn: string = "";
+  @Input() cColumn: string = "";
+  @Input() xColumn: string = "";
+  @Input() yColumn: string = "";
+  @Input() xAxisLabelText: string = "";
+  @Input() yAxisLabelText: string = "";
   
   private htmlElement: HTMLElement;
   private host;
@@ -45,13 +44,13 @@ export class ScatterComponent implements OnInit, OnChanges {
     this.host = d3.select(this.element.nativeElement);
   }
 
-  ngOnInit() { 
-    this.setup();
-    this.render();
+  ngOnInit() {
+
   }
 
   ngOnChanges(changes: SimpleChanges){
-    console.log(`changes ${JSON.stringify(changes)}`);
+    //we want to set up the svg AND render the chart when any component properties like width or max/min radius change.  only the render() should be called on DATA changes
+    this.setup();
     this.render();
   }
 
@@ -64,7 +63,6 @@ export class ScatterComponent implements OnInit, OnChanges {
     this.xAxisG.call(this.xAxis);
 
     //bind data to dom with a selector
-    console.log(`this.data ${JSON.stringify(this.data)}`);
     var circles = this.g.selectAll("circle").data(this.data);
 
     var circlesEnter = circles.enter().append("circle");
@@ -125,6 +123,7 @@ export class ScatterComponent implements OnInit, OnChanges {
       .style('fill','black')
       .attr("transform", "translate(-" + this.yAxisLabelOffset + "," + (this.innerHeight / 2) + ") rotate(-90)")
       .text(this.yAxisLabelText);  
+    
     this.scaleX = d3.scaleLinear().range([0, this.innerWidth]);
     this.scaleY = d3.scaleLinear().range([this.innerHeight, 0]);
     this.scaleR = d3.scaleLinear().range([this.rMin, this.rMax]);
