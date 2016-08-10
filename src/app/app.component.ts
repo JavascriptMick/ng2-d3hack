@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
-import { ScatterComponent } from './scatter/scatter.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
-  styleUrls: ['app.component.css'],
-  directives: [ ScatterComponent ]
+  styleUrls: ['app.component.css']
 })
 export class AppComponent {
   title = 'Angular2 D3 Component Example';

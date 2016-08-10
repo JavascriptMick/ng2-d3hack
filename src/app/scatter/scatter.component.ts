@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ElementRef, OnChanges, SimpleChanges,  } from
 import * as d3 from 'd3';
 
 @Component({
-  moduleId: module.id,
+  moduleId: module.id.toString(),//required untill this is fixed (https://github.com/angular/angular/issues/10626)
   selector: 'my-scatter',
   template: `<ng-content></ng-content>`
 })
