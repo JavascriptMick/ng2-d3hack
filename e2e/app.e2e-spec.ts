@@ -1,6 +1,6 @@
 import { Ng2D3hackPage } from './app.po';
 
-describe('ng2-d3hack App', function() {
+describe('migration-project App', function() {
   let page: Ng2D3hackPage;
 
   beforeEach(() => {

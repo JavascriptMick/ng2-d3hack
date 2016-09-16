@@ -1,12 +1,14 @@
 import { Component, OnInit, Input, ElementRef, OnChanges, SimpleChanges,  } from '@angular/core';
-import * as d3 from 'd3';
+import { D3Service, D3, Selection } from 'd3-ng2-service';
 
 @Component({
-  moduleId: module.id.toString(),//required untill this is fixed (https://github.com/angular/angular/issues/10626)
+  //moduleId: module.id.toString(),//required untill this is fixed (https://github.com/angular/angular/issues/10626)
   selector: 'my-scatter',
   template: `<ng-content></ng-content>`
 })
 export class ScatterComponent implements OnInit, OnChanges {
+  private d3: D3;
+
   @Input() outerWidth: number = 300;
   @Input() outerHeight: number = 250;
   @Input() margin = { left: 45, top: 10, right: 15, bottom: 40 };
@@ -15,7 +17,7 @@ export class ScatterComponent implements OnInit, OnChanges {
   @Input() rMin: number = 1;
   @Input() rMax: number = 15;
   @Input() styleAttrs = {"stroke-width": "2px","fill": "none"};
-  @Input() cScheme: string[] = d3.schemeCategory10;
+  @Input() cScheme: string[] = [];
   @Input() rColumn: string = "";
   @Input() cColumn: string = "";
   @Input() xColumn: string = "";
@@ -23,6 +25,7 @@ export class ScatterComponent implements OnInit, OnChanges {
   @Input() xAxisLabelText: string = "";
   @Input() yAxisLabelText: string = "";
   
+
   private htmlElement: HTMLElement;
   private host;
   private svg; private g; private xAxisG; private xAxisLabel;
@@ -39,13 +42,13 @@ export class ScatterComponent implements OnInit, OnChanges {
     {sepal_length: 9.9,sepal_width: 3.0,petal_length: 11.6,petal_width: 0.2,species: "thing"}
   ];
 
-  constructor(private element: ElementRef) { 
+  constructor(private element: ElementRef, d3Service: D3Service) { 
     this.htmlElement = this.element.nativeElement;
-    this.host = d3.select(this.element.nativeElement);
+    this.d3 = d3Service.getD3();
+    this.host = this.d3.select(this.element.nativeElement);
   }
 
   ngOnInit() {
-
   }
 
   ngOnChanges(changes: SimpleChanges){
@@ -55,9 +58,9 @@ export class ScatterComponent implements OnInit, OnChanges {
   }
 
   render(){
-    this.scaleX.domain(d3.extent(this.data, d => d[this.xColumn]));
-    this.scaleY.domain(d3.extent(this.data, d => d[this.yColumn]));
-    this.scaleR.domain(d3.extent(this.data, d => d[this.rColumn]));
+    this.scaleX.domain(this.d3.extent(this.data, d => d[this.xColumn]));
+    this.scaleY.domain(this.d3.extent(this.data, d => d[this.yColumn]));
+    this.scaleR.domain(this.d3.extent(this.data, d => d[this.rColumn]));
 
     this.yAxisG.call(this.yAxis);
     this.xAxisG.call(this.xAxis);
@@ -91,6 +94,10 @@ export class ScatterComponent implements OnInit, OnChanges {
   }
 
   setup(){
+    if(this.cScheme.length===0){
+      this.cScheme = this.d3.schemeCategory10;
+    }
+
     this.innerWidth  = this.outerWidth  - this.margin.left - this.margin.right;
     this.innerHeight = this.outerHeight - this.margin.top  - this.margin.bottom;
 
@@ -124,13 +131,13 @@ export class ScatterComponent implements OnInit, OnChanges {
       .attr("transform", "translate(-" + this.yAxisLabelOffset + "," + (this.innerHeight / 2) + ") rotate(-90)")
       .text(this.yAxisLabelText);  
     
-    this.scaleX = d3.scaleLinear().range([0, this.innerWidth]);
-    this.scaleY = d3.scaleLinear().range([this.innerHeight, 0]);
-    this.scaleR = d3.scaleLinear().range([this.rMin, this.rMax]);
-    this.scaleC = d3.scaleOrdinal().range(this.cScheme);
+    this.scaleX = this.d3.scaleLinear().range([0, this.innerWidth]);
+    this.scaleY = this.d3.scaleLinear().range([this.innerHeight, 0]);
+    this.scaleR = this.d3.scaleLinear().range([this.rMin, this.rMax]);
+    this.scaleC = this.d3.scaleOrdinal().range(this.cScheme);
 
-    this.yAxis = d3.axisLeft(this.scaleY);
-    this.xAxis = d3.axisBottom(this.scaleX);
+    this.yAxis = this.d3.axisLeft(this.scaleY);
+    this.xAxis = this.d3.axisBottom(this.scaleX);
   }
   
 }

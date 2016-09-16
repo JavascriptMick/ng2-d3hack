@@ -1,3 +1,5 @@
+import { browser, element, by } from 'protractor/globals';
+
 export class Ng2D3hackPage {
   navigateTo() {
     return browser.get('/');
